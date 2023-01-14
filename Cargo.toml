@@ -6,3 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+comrak = { version = "0.15.0", default-features = false, features = ["syntect"] }
+tokio-tungstenite = "0.18.0"
