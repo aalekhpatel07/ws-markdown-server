@@ -1,15 +1,14 @@
 use comrak::{markdown_to_html, ComrakOptions};
 
-use std::{sync::{Arc, Mutex}, net::SocketAddr};
-use tracing::{
-    trace,
-    info, error
+use futures_util::{SinkExt, StreamExt};
+use std::net::ToSocketAddrs;
+use std::{
+    net::SocketAddr,
+    sync::{Arc, Mutex},
 };
 use tokio::net::{TcpListener, TcpStream};
-use std::net::ToSocketAddrs;
-use futures_util::{StreamExt, SinkExt};
 use tokio_tungstenite::tungstenite::Result;
-
+use tracing::{error, info, trace};
 
 #[derive(Debug, Clone, Default)]
 pub struct MarkdownEngine {
@@ -27,22 +26,21 @@ impl MarkdownEngine {
         trace!(text_len = md.len(), "Rendering markdown...");
         markdown_to_html(md, &self.options)
     }
-
 }
-
 
 pub type SharedState<T> = Arc<Mutex<T>>;
 pub type Engine = SharedState<MarkdownEngine>;
 
-
-pub async fn accept_connection(stream: TcpStream, engine: Engine) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+pub async fn accept_connection(
+    stream: TcpStream,
+    engine: Engine,
+) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     let addr = stream.peer_addr()?;
     if let Err(e) = handle_connection(addr, stream, engine).await {
         match e {
-            tokio_tungstenite::tungstenite::Error::ConnectionClosed 
+            tokio_tungstenite::tungstenite::Error::ConnectionClosed
             | tokio_tungstenite::tungstenite::Error::AlreadyClosed
-            | tokio_tungstenite::tungstenite::Error::Protocol(_)
-            => {
+            | tokio_tungstenite::tungstenite::Error::Protocol(_) => {
                 info!("Connection from {} closed", addr);
             }
             err => {
@@ -53,11 +51,7 @@ pub async fn accept_connection(stream: TcpStream, engine: Engine) -> Result<(), 
     Ok(())
 }
 
-pub async fn handle_connection(
-    peer: SocketAddr, 
-    stream: TcpStream,
-    engine: Engine
-) -> Result<()> {
+pub async fn handle_connection(peer: SocketAddr, stream: TcpStream, engine: Engine) -> Result<()> {
     let mut ws_stream = tokio_tungstenite::accept_async(stream).await?;
     info!("Accepted connection from {}", peer);
     while let Some(msg) = ws_stream.next().await {
@@ -73,7 +67,10 @@ pub async fn handle_connection(
     Ok(())
 }
 
-pub async fn create_server<A: ToSocketAddrs>(addr: A, engine: Engine) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn create_server<A: ToSocketAddrs>(
+    addr: A,
+    engine: Engine,
+) -> Result<(), Box<dyn std::error::Error>> {
     let addr = addr.to_socket_addrs()?.next().unwrap();
     let listener = TcpListener::bind(&addr).await?;
 
@@ -83,7 +80,6 @@ pub async fn create_server<A: ToSocketAddrs>(addr: A, engine: Engine) -> Result<
     }
     Ok(())
 }
-
 
 #[tokio::main]
 pub async fn main() {
