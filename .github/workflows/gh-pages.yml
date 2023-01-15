@@ -23,7 +23,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: |
+      - name: Build the Svelte app
+        env:
+          MD_SERVER_URL: ${{ secrets.MD_SERVER_URL }}
+        run: |
           cd usage/client
           npm ci
           npm run build
