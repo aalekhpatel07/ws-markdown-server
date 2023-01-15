@@ -4,7 +4,6 @@ use futures_util::{SinkExt, StreamExt};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_tungstenite::WebSocketStream;
 
-
 use std::net::ToSocketAddrs;
 use std::{
     net::SocketAddr,
@@ -12,14 +11,13 @@ use std::{
 };
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::tungstenite::Result;
-use tracing::{error, info, trace, debug};
-
+use tracing::{debug, error, info, trace};
 
 #[derive(Parser, Debug, Clone)]
 #[clap(
-    author="Aalekh Patel <aalekh.gwpeck.7998@icloud.com>", 
-    about="A simple markdown-to-html websocket server backed by comrak and tokio-tungstenite.", 
-    version="1.0.0",
+    author = "Aalekh Patel <aalekh.gwpeck.7998@icloud.com>",
+    about = "A simple markdown-to-html websocket server backed by comrak and tokio-tungstenite.",
+    version = "1.0.0"
 )]
 
 pub struct Opts {
@@ -88,8 +86,11 @@ pub async fn accept_socket_connection(
     Ok(())
 }
 
-
-pub async fn handle_ws_connection(peer: SocketAddr, mut ws_stream: WebSocketStream<TcpStream>, engine: Engine) -> Result<()> {
+pub async fn handle_ws_connection(
+    peer: SocketAddr,
+    mut ws_stream: WebSocketStream<TcpStream>,
+    engine: Engine,
+) -> Result<()> {
     while let Some(msg) = ws_stream.next().await {
         let msg = msg?;
         if msg.is_text() || msg.is_binary() {
@@ -102,7 +103,11 @@ pub async fn handle_ws_connection(peer: SocketAddr, mut ws_stream: WebSocketStre
     Ok(())
 }
 
-pub async fn handle_socket_connection(peer: SocketAddr, mut stream: TcpStream, engine: Engine) -> Result<()> {
+pub async fn handle_socket_connection(
+    peer: SocketAddr,
+    mut stream: TcpStream,
+    engine: Engine,
+) -> Result<()> {
     debug!("Accepted TcpStream from {}", peer);
     let (mut read_half, mut write_half) = stream.split();
     loop {
@@ -120,7 +125,6 @@ pub async fn create_ws_server<A: ToSocketAddrs>(
     addr: A,
     engine: Engine,
 ) -> Result<(), Box<dyn std::error::Error>> {
-
     let addr = addr.to_socket_addrs()?.next().unwrap();
     let listener = TcpListener::bind(&addr).await?;
     info!("Listening for WebSocket connections on {}", addr);
@@ -131,12 +135,10 @@ pub async fn create_ws_server<A: ToSocketAddrs>(
     Ok(())
 }
 
-
 pub async fn create_tcp_server<A: ToSocketAddrs>(
     addr: A,
     engine: Engine,
 ) -> Result<(), Box<dyn std::error::Error>> {
-
     let addr = addr.to_socket_addrs()?.next().unwrap();
     let listener = TcpListener::bind(&addr).await?;
     info!("Listening for TCP (Unix) socket connections on {}", addr);
