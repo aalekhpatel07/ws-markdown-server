@@ -20,7 +20,7 @@ clap = { version = "4.1.1", features = ["derive", "env"]}
 comrak = { version = "0.15.0", default-features = false, features = ["syntect"] }
 futures-util = "0.3.25"
 tokio = { version = "1.24.1", features = ["rt", "rt-multi-thread", "tokio-macros", "full"] }
-tokio-tungstenite = "0.18.0"
+tokio-tungstenite = { version = "0.18.0", features = ["native-tls"]}
 tracing = "0.1.37"
 tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
 
