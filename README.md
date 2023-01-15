@@ -8,7 +8,7 @@ A simple Markdown Websocket (and Unix socket) server backed by [`comrak`](https:
 
 1. Download the docker image.
 ```sh
-docker pull aalekhpatel07/ws-markdown-server:1.0.0
+docker pull aalekhpatel07/ws-markdown-server:1.0.2
 ```
 
 2. Start the container:
@@ -30,7 +30,7 @@ You can run a Markdown server on your local machine via `ws-markdown-server`:
 
 1. Install it with `cargo`:
 ```sh
-cargo install ws-markdown-server
+cargo install ws-markdown-server@1.0.2
 ```
 2. Start the server:
 ```sh
