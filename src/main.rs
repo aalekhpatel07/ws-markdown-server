@@ -1,5 +1,5 @@
 use comrak::{markdown_to_html, ComrakOptions};
-use tracing_subscriber;
+
 use std::{sync::{Arc, Mutex}, net::SocketAddr};
 use tracing::{
     trace,
@@ -7,7 +7,7 @@ use tracing::{
 };
 use tokio::net::{TcpListener, TcpStream};
 use std::net::ToSocketAddrs;
-use futures_util::{future, StreamExt, TryStreamExt, SinkExt};
+use futures_util::{StreamExt, SinkExt};
 use tokio_tungstenite::tungstenite::Result;
 
 
