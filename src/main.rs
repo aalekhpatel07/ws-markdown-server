@@ -3,8 +3,8 @@ use comrak::{markdown_to_html, ComrakOptions};
 use futures_util::{SinkExt, StreamExt};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_tungstenite::WebSocketStream;
-use tracing::metadata::LevelFilter;
-use tracing_subscriber::EnvFilter;
+
+
 use std::net::ToSocketAddrs;
 use std::{
     net::SocketAddr,
