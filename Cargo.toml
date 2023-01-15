@@ -1,11 +1,12 @@
 [package]
 name = "ws-markdown-server"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+clap = { version = "4.1.1", features = ["derive", "env"]}
 comrak = { version = "0.15.0", default-features = false, features = ["syntect"] }
 futures-util = "0.3.25"
 tokio = { version = "1.24.1", features = ["rt", "rt-multi-thread", "tokio-macros", "full"] }
