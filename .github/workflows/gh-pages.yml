@@ -24,6 +24,7 @@ jobs:
         with:
           node-version: 16
       - run: |
+          cd usage/client
           npm ci
           npm run build
       - name: Archive production artifacts
