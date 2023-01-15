@@ -32,7 +32,7 @@ jobs:
         with:
           name: github-pages # deploy-pages expects an uploaded artifact called "github-pages".
           path: |
-            dist
+            usage/client/dist
   deploy-pages:
     needs: build-svelte-app
     permissions:
