@@ -3,8 +3,9 @@
   import { markdownText, connection } from './lib/stores';
   import { onMount, onDestroy } from "svelte";
 
+
   const DEFAULT_WEBSOCKET_URL = "ws://0.0.0.0:9003";
-  const WEBSOCKET_URL = import.meta.env.DEV ? DEFAULT_WEBSOCKET_URL : import.meta.env.VITE_MD_SERVER_URL;
+  const WEBSOCKET_URL = import.meta.env.VITE_MD_SERVER_URL || DEFAULT_WEBSOCKET_URL;
 
   async function setupSocket(ws_url = WEBSOCKET_URL) {
     const socket = new WebSocket(ws_url);
