@@ -23,7 +23,7 @@ use tracing::{debug, error, info, trace};
 pub struct Opts {
     #[clap(short, long, default_value = "0.0.0.0", env = "MD_SERVER_HOST")]
     pub host: String,
-    #[clap(short, long, default_value_t = 9093, env = "MD_SERVER_WS_PORT")]
+    #[clap(short, long, default_value_t = 9003, env = "MD_SERVER_WS_PORT")]
     pub ws_port: u16,
     #[clap(short, long, default_value = None, env = "MD_SERVER_TCP_PORT")]
     pub port: Option<u16>,
