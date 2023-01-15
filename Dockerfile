@@ -9,6 +9,7 @@ RUN cargo install --path .
 
 FROM debian:buster-slim
 RUN apt-get update -y
+RUN apt-get install -y libssl-dev
 COPY --from=builder /usr/local/cargo/bin/ws-markdown-server /usr/local/bin/ws-markdown-server
 
 ENV RUST_LOG="ws_markdown_server=debug"

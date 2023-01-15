@@ -82,6 +82,6 @@
         </div>
     </div>
 </div>
-<div class="w-full" style="border: 1px solid black;">
+<div class="w-full" style="border: 1px solid black; text-align: left;">
     <div bind:this={resultDiv}></div>
 </div>
