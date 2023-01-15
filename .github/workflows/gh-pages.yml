@@ -30,7 +30,7 @@ jobs:
       - name: Archive production build of the Svelte app.
         uses: actions/upload-pages-artifact@v1
         with:
-          path: usage/client/dist/**/*
+          path: usage/client/dist/
   deploy-pages:
     needs: build-svelte-app
     permissions:
