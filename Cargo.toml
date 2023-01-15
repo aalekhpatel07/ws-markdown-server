@@ -1,6 +1,6 @@
 [package]
 name = "ws-markdown-server"
-version = "1.0.1"
+version = "1.0.2"
 edition = "2021"
 authors = ["Aalekh Patel <aalekh.gwpeck.7998@icloud.com>"]
 description = "A simple Websocket (as well as a Unix socket) server that serves on-the-fly compilation of Markdown to HTML."

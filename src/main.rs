@@ -1,7 +1,7 @@
 use clap::Parser;
 use comrak::{markdown_to_html, ComrakOptions};
 use futures_util::{SinkExt, StreamExt};
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::io::{AsyncReadExt, AsyncWriteExt, BufStream};
 use tokio_tungstenite::WebSocketStream;
 
 use std::net::ToSocketAddrs;
@@ -27,6 +27,8 @@ pub struct Opts {
     pub ws_port: u16,
     #[clap(short, long, default_value = None, env = "MD_SERVER_TCP_PORT")]
     pub port: Option<u16>,
+    #[clap(short, long, default_value_t = 9005, env = "MD_HEALTHCHECK_PORT")]
+    pub healthcheck_port: u16,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -149,6 +151,23 @@ pub async fn create_tcp_server<A: ToSocketAddrs>(
     Ok(())
 }
 
+pub async fn create_healthcheck_http_server(port: u16) -> Result<(), Box<dyn std::error::Error>> {
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", port).parse::<SocketAddr>()?).await?;
+    info!("Listening for healthcheck requests on port {}", port);
+    
+
+    while let Ok((mut stream, _)) = listener.accept().await {
+        stream.writable().await?;
+        tokio::spawn(async move {
+            let buf = b"HTTP/1.1 200 OK\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{\"status\":\"ok\"}\r\n";
+            let _ = stream.write(buf).await;
+            stream.shutdown().await.expect("Faield to shutdown stream.");
+        });
+    }
+
+    Ok(())
+}
+
 #[tokio::main]
 pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opts = Opts::parse();
@@ -162,11 +181,12 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let addr = format!("{}:{}", opts.host, port);
         create_tcp_server(addr, engine.clone())
     });
+    let task3 = create_healthcheck_http_server(opts.healthcheck_port);
 
     if let Some(task2) = task2 {
-        _ = tokio::join!(task1, task2);
+        _ = tokio::join!(task1, task2, task3);
     } else {
-        task1.await?;
+        _ = tokio::join!(task1, task3);
     }
     Ok(())
 }
