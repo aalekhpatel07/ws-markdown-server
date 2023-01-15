@@ -27,12 +27,10 @@ jobs:
           cd usage/client
           npm ci
           npm run build
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
+      - name: Archive production build of the Svelte app.
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: github-pages # deploy-pages expects an uploaded artifact called "github-pages".
-          path: |
-            usage/client/dist
+          path: usage/client/dist
   deploy-pages:
     needs: build-svelte-app
     permissions:
