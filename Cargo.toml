@@ -9,7 +9,6 @@ documentation = "https://docs.rs/ws-markdown-server/1.0.0"
 readme = "./README.md"
 repository = "https://github.com/aalekhpatel07/ws-markdown-server"
 license-file = "./LICENSE.md"
-license = "GPL3"
 keywords = ["websocket-server", "markdown", "markdown-server", "tokio", "comrak"]
 categories = ["web-programming::websocket"]
 exclude = ["usage/", ".dockerignore", ".gitignore", "Dockerfile"]
