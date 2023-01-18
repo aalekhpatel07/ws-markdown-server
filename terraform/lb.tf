@@ -1,6 +1,6 @@
 // Create a load balancer that will be used to route traffic to the markdown server.
-resource "aws_alb" "markdown_server_load_balancer" {
-    name = "markdown-server-load-balancer"
+resource "aws_alb" "server_load_balancer" {
+    name = "${var.project_name}-load-balancer"
     load_balancer_type = "application"
 
     subnets = [
@@ -33,7 +33,8 @@ resource "aws_security_group" "load_balancer_security_group" {
 
 // Allow the markdown_server instances to be freely able to communicate with anything
 // since they're only really allowed access by the load balancer.
-resource "aws_security_group" "markdown_server_security_group" {
+resource "aws_security_group" "server_security_group" {
+    name = "${var.project_name}-security-group"
     ingress {
         from_port = 0
         to_port = 0
@@ -52,13 +53,13 @@ resource "aws_security_group" "markdown_server_security_group" {
 }
 
 // Create a target group of servers that the load balancer can point to.
-resource "aws_lb_target_group" "markdown_server_target_group" {
-    name = "markdown-server-target-group"
+resource "aws_lb_target_group" "server_target_group" {
+    name = "${var.project_name}-target-group"
     // The load balancer that this target group will be associated with.
     // This is a dependency because the target group can't be created until the load balancer
     // has been created.
     depends_on = [
-      aws_alb.markdown_server_load_balancer
+      aws_alb.server_load_balancer
     ]
 
     // The port that the targets (i.e. server instances) will receive traffic on.
@@ -73,23 +74,23 @@ resource "aws_lb_target_group" "markdown_server_target_group" {
 
     // This is how the server instances report they are healthy.
     health_check {
-        path = "/"
+        path = var.healthcheck_path
         interval = 15
         timeout = 5
         healthy_threshold = 2
         unhealthy_threshold = 2
-        port = 9005
+        port = var.healthcheck_port
         matcher = "200,301,302"
     }
 }
 
 // Create a listener that will listen for traffic on port 80 and forward it to the target group.
-resource "aws_lb_listener" "markdown_server_listener" {
-    load_balancer_arn = "${aws_alb.markdown_server_load_balancer.arn}"
+resource "aws_lb_listener" "server_listener" {
+    load_balancer_arn = "${aws_alb.server_load_balancer.arn}"
     port = 80
     protocol = "HTTP"
     default_action {
         type = "forward"
-        target_group_arn = "${aws_lb_target_group.markdown_server_target_group.arn}"
+        target_group_arn = "${aws_lb_target_group.server_target_group.arn}"
     }
 }

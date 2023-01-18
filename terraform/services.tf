@@ -3,19 +3,19 @@
 // and a cluster. The service will be deployed to the cluster and will use the
 // task definition to define the containers that will be deployed.
 
-resource "aws_ecs_service" "markdown_server" {
-    name = "markdown-server"
+resource "aws_ecs_service" "server" {
+    name = var.project_name
     cluster = "${aws_ecs_cluster.my_default_cluster.id}"
-    task_definition = "${aws_ecs_task_definition.markdown_server.arn}"
+    task_definition = "${aws_ecs_task_definition.server.arn}"
     launch_type = "FARGATE"
     desired_count = 3
 
     // We want the service to be load-balanced by our server load balancer
     // and we wanna register the instances we create with the target group.
     load_balancer {
-        target_group_arn = "${aws_lb_target_group.markdown_server_target_group.arn}"
-        container_name = "${aws_ecs_task_definition.markdown_server.family}"
-        container_port = 9003
+        target_group_arn = "${aws_lb_target_group.server_target_group.arn}"
+        container_name = "${aws_ecs_task_definition.server.family}"
+        container_port = var.container_port
     }
 
     // The subnets are the availability zones and the security groups are the
@@ -31,7 +31,7 @@ resource "aws_ecs_service" "markdown_server" {
         ]
         security_groups = [
             "${aws_security_group.load_balancer_security_group.id}",
-            "${aws_security_group.markdown_server_security_group.id}"
+            "${aws_security_group.server_security_group.id}"
         ]
         assign_public_ip = true
     }

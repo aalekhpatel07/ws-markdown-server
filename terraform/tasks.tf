@@ -2,13 +2,13 @@
 // The core variable for this deployment. Define the task
 // using a docker image, the ports it will use, and the
 // resources it will need.
-resource "aws_ecs_task_definition" "markdown_server" {
-    family = "markdown-server"
+resource "aws_ecs_task_definition" "server" {
+    family = var.project_name
     container_definitions = <<DEFINITION
     [
         {
-            "name": "markdown-server",
-            "image": "aalekhpatel07/ws-markdown-server:1.0.2",
+            "name": "${var.project_name}",
+            "image": "${var.docker_image}",
             "essential": true,
             "portMappings": [
                 {

@@ -1,0 +1,5 @@
+project_name = "markdown-server"
+container_port = 9003
+docker_image = "aalekhpatel07/ws-markdown-server:1.0.2"
+healthcheck_port = 9005
+healthcheck_path = "/"
