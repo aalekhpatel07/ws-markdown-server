@@ -1,3 +1,6 @@
+// Not creating any VPCs or subnets but obtaining references
+// to them so that we can use them elsewhere.
+
 resource "aws_default_vpc" "default_vpc" {}
 
 resource "aws_default_subnet" "default_subnet_a" {
